@@ -1,14 +1,19 @@
-from socket import socket, AF_INET, SOCK_DGRAM
+from socket import socket, AF_INET, SOCK_STREAM
 from config import host, port, buffer_size
 
-client = socket(AF_INET, SOCK_DGRAM)
-message = input('Input a lowercase message: ')
+client = socket(AF_INET, SOCK_STREAM)
 
-client.sendto(message.encode(), (host, port))
+client.connect((host, port))
 
-modifiedMessage, address = client.recvfrom(buffer_size)
+while True:
+    message = input('Input a lowercase message or "exit" (if you want to stop this socket): ')
 
-print(f"Response message: {modifiedMessage.decode()}")
-print(f"Server: {address}")
+    client.send(message.encode())
 
-client.close()
+    if message == 'exit':
+        client.close()
+        break
+
+    modified_message = client.recv(buffer_size)
+
+    print(f'Response message: {modified_message.decode()}')

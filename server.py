@@ -1,14 +1,24 @@
-from socket import socket, AF_INET, SOCK_DGRAM
+from socket import socket, AF_INET, SOCK_STREAM
 from config import port, buffer_size
 
-server = socket(AF_INET, SOCK_DGRAM)
+server = socket(AF_INET, SOCK_STREAM)
 
 server.bind(('', port))
 
 print('Server is running!')
 
-while True:
-    message, address = server.recvfrom(buffer_size)
-    modifiedMessage = message.upper()
+server.listen(1)
+connection, address = server.accept()
 
-    server.sendto(modifiedMessage, address)
+print(f'Address: {address}')
+
+while True:
+    message = connection.recv(buffer_size).decode()
+
+    if message == 'exit':
+        connection.close()
+        break
+    else:
+        print(f'Received message: {message}')
+
+        connection.send(message.upper().encode())
