@@ -18,7 +18,7 @@ while True:
     if message == 'exit':
         connection.close()
         break
-    else:
-        print(f'Received message: {message}')
 
-        connection.send(message.upper().encode())
+    print(f'Received message: {message}')
+
+    connection.send(message.upper().encode())
